@@ -5,12 +5,12 @@
  */
 
 function Format() {
-    this.currentArgs=null;
+    var currentArgs=null;
     var _customVariables;
     var _customVariablesUsed=false;
     
     this.format=function(format,args){
-        this.currentArgs = Array.prototype.slice.call(arguments,1);
+        currentArgs = Array.prototype.slice.call(arguments,1);
         //console.info(this.currentArgs);
         if (format==null) return "Error: undefined Format";
 	if (arguments.length<2) return format;
@@ -27,7 +27,7 @@ function Format() {
     
     function format_replace(params){
         var args=arguments;
-        if (this.currentArgs==null) throw new Error("Format not in scope");
+        if (currentArgs==null) throw new Error("Format not in scope");
         try {
             var res=args[0];
             if (args[Format.PLP_PARAMS]==undefined || args[Format.PLP_PARAMS]==Format.EMPTY) {
@@ -67,9 +67,9 @@ function Format() {
             if (args[Format.PLP_SUBSELECT] != Format.EMPTY) {
                     var val;
                     if (args[Format.PLP_SELECT] != Format.EMPTY) {
-                            val = this.currentArgs[parseInt(args[Format.PLP_SELECT],10)];
+                            val = currentArgs[parseInt(args[Format.PLP_SELECT],10)];
                     } else {
-                            val = this.currentArgs[0];
+                            val = currentArgs[0];
                     }
                     return val[args[Format.PLP_SUBSELECT]];
             }
@@ -78,7 +78,7 @@ function Format() {
                     return _customVariables[args[Format.PLP_SELECTVAR]];
                else return "NA";
             }
-            return this.currentArgs[parseInt(args[Format.PLP_SELECT],10)];
+            return currentArgs[parseInt(args[Format.PLP_SELECT],10)];
     }
     function format_decimal(rule,nr){
         return nr.toString(16).toUpperCase();
