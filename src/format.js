@@ -1,7 +1,7 @@
 /**
  * This Utility knows various formats
  * @author nomiad | guavestudios
- * @version 1.0
+ * @version 0.3
  */
 
 function Format() {
@@ -22,12 +22,10 @@ function Format() {
             _customVariables=null;
         }
         return str;
-        //return format.replace(Format.placeholderPattern, format_replace);
     }
     
     function format_replace(params){
         var args=arguments;
-        if (currentArgs==null) throw new Error("Format not in scope");
         try {
             var res=args[0];
             if (args[Format.PLP_PARAMS]==undefined || args[Format.PLP_PARAMS]==Format.EMPTY) {
@@ -102,6 +100,7 @@ function Format() {
     }
     function format_number(rule,nr) {
         var res = Format.formatNumberReg.exec(rule);
+        //if (!isNaN(getValue.call(this,args))) {
         if (res != null) {
             var digits = 0;
             var forceDigits = 0;
