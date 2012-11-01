@@ -5,24 +5,29 @@
  */
 
 function Format() {
+    var that=this;
     var currentArgs=null;
     var _customVariables;
     var _customVariablesUsed=false;
+    var _plugins={
+            "d":format_number,
+            "h":format_decimal,
+            "?":format_parseIf,
+            "s":format_tabs
+        };
     
     this.format=function(format,args){
         currentArgs = Array.prototype.slice.call(arguments,1);
-        //console.info(this.currentArgs);
         if (format==null) return "Error: undefined Format";
-	if (arguments.length<2) return format;
-	if (format.indexOf("{") == -1) return format; //optimized
-	var that=this;
-	var str=format.replace(Format.placeholderPattern, function(){return format_replace.apply(that,arguments);});
+    	if (arguments.length<2) return format;
+    	if (format.indexOf("{") == -1) return format; //optimized
+    	var str=format.replace(Format.placeholderPattern, function(){return format_replace.apply(that,arguments);});
         if (_customVariablesUsed) {
             _customVariablesUsed=false;
             _customVariables=null;
         }
         return str;
-    }
+    };
     
     function format_replace(params){
         var args=arguments;
@@ -31,37 +36,30 @@ function Format() {
             if (args[Format.PLP_PARAMS]==undefined || args[Format.PLP_PARAMS]==Format.EMPTY) {
                     res=getValue.call(this,args).toString();
             } else {
-                    var c = args[Format.PLP_PARAMS].charAt(0);
-                    if (c=="d") {// format as fixed
-                        if (!isNaN(getValue.call(this,args))) {
-                                    res= format_number.call(this,args[Format.PLP_PARAMS],getValue.call(this,args));
-                            }
-                    } else if (c == "?") {
-                            res= format_parseIf.call(this,args[Format.PLP_PARAMS],getValue.call(this,args));
-                    } else if (c == "h") { //hexadecimal
-                            res= format_decimal.call(this,args[Format.PLP_PARAMS],getValue.call(this,args));
-                    } else if (c == "s") {
-                            res= format_tabs.call(this,args[Format.PLP_PARAMS], getValue.call(this,args));
-                    }
+                var c = args[Format.PLP_PARAMS].charAt(0);
+                var plug=_plugins[c];
+                if (plug!=null){  //check plugin for formatting
+                    res=plug.call(this,args[Format.PLP_PARAMS],getValue.call(this,args));
+                }
             }
             if (args[Format.PLP_ASSIGN] != undefined && args[Format.PLP_ASSIGN]!=Format.EMPTY) {
-                    if (!_customVariablesUsed) {
-                        _customVariables={};
-                        _customVariablesUsed=true;
-                    }
-                    
-                    _customVariables[args[Format.PLP_ASSIGN]] = res;
-                    return "";
+                if (!_customVariablesUsed) {
+                    _customVariables={};
+                    _customVariablesUsed=true;
+                }
+                
+                _customVariables[args[Format.PLP_ASSIGN]] = res;
+                return "";
             }
-            //console.info("return: "+res);
         } catch(e){
-            console.warn("Format problem: '"+args[0]+"' in '"+args[7].substr(0,16)+"...'");
+            res=args[0];
+            if (window.console!=null)
+                console.warn("Format problem: '"+args[0]+"' in '"+args[7].substr(0,16)+"...'");
         }
         return res;
     }
     
     function getValue(args) {
-            //console.info(args);
             if (args[Format.PLP_SUBSELECT] != Format.EMPTY) {
                     var val;
                     if (args[Format.PLP_SELECT] != Format.EMPTY) {
@@ -78,6 +76,7 @@ function Format() {
             }
             return currentArgs[parseInt(args[Format.PLP_SELECT],10)];
     }
+    
     function format_decimal(rule,nr){
         return nr.toString(16).toUpperCase();
     }
@@ -98,9 +97,13 @@ function Format() {
         }
         return rule;
     }
-    function format_number(rule,nr) {
+    function format_number(rule,val) {
         var res = Format.formatNumberReg.exec(rule);
-        //if (!isNaN(getValue.call(this,args))) {
+        var nr=val;
+        
+        //check if its a number
+        if (isNaN(nr)) return rule;
+        
         if (res != null) {
             var digits = 0;
             var forceDigits = 0;
