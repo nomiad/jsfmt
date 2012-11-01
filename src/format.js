@@ -1,6 +1,7 @@
 /**
  * This Utility knows various formats
  * @author nomiad | guavestudios
+ * @license MIT -> LICENSE
  * @version 0.3
  */
 
