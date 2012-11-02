@@ -1,0 +1,33 @@
+{
+    "name": "jsfmt",
+    "description": "javascript formatter",
+    "version": "0.2",
+    "homepage" : "http://www.guavestudios.com",
+    "engines": {"node": ">= 0.6.15"},
+    "author": "nomiad | guavestudios.com",
+    "help": {
+        "web": "https://github.com/nomiad/jsfmt"
+    },
+
+    "pm": "sm",
+    "dependencies": {
+        
+    },
+
+    "devDependencies": {
+        "uglify-js": "1.3.4"
+    },
+
+    "repository" : {
+        "type" : "git",
+         "url" : "git://github.com/nomiad/jsfmt.git"
+    },
+    "licenses": [{
+        "type": "MIT",
+        "url": "http://opensource.org/licenses/mit-license.php"
+    }],
+
+    "scripts": {
+        //"build-debug": "sh ./build.sh"
+    }
+}
