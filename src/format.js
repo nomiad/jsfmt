@@ -12,7 +12,7 @@
         var currentArgs=null;
         var _customVariables;
         var _customVariablesUsed=false;
-        var _plugins={
+        var _plugins={                          //default plugins
                 "d":format_number,
                 "h":format_decimal,
                 "?":format_parseIf,
@@ -31,6 +31,18 @@
             }
             return str;
         };
+        
+        //plugin interface
+        this.getValue=getValue;
+        this.addPlugin=addPlugin;
+        
+        
+        function addPlugin(plugin){
+            // {id:"s",fnc:function,init:null|function}
+            _plugins[plugin.id]=plugin.fnc;
+            if(plugin.init) plugin.init(this);    
+        }
+        
         
         function format_replace(params){
             var args=arguments;

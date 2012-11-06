@@ -1,7 +1,7 @@
 {
     "name": "jsfmt",
     "description": "javascript formatter",
-    "version": "0.2",
+    "version": "0.2.0",
     "homepage" : "http://www.guavestudios.com",
     "engines": {"node": ">= 0.6.15"},
     "author": "nomiad | guavestudios.com",
@@ -28,6 +28,5 @@
     }],
 
     "scripts": {
-        //"build-debug": "sh ./build.sh"
     }
 }
