@@ -219,21 +219,6 @@
         PLP_PARAMS: 5
     };
     
-    /*
-    Format.placeholderPattern =/\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9]{1,15}?|)(?:\:(.+?)|)\}/g;
-    Format.parseIfReg = /^\?(.{1,2})([0-9]{1,5})\|(.*?)\|(.*?)$/;
-    Format.formatNumberReg =/^d(?:(\.|\,|\')|)([#]{1,5})(?:(\.|\,)([#\?]{1,4})|)([cfr]|)$/;
-    Format.parseTabsReg=/^s([l,r,m])([0-9]{1,2})\|(.)/;
-    Format.EMPTY = "";
-    
-    //place holder positions
-    Format.PLP_ASSIGN = 1;
-    Format.PLP_SELECT = 2;
-    Format.PLP_SELECTVAR = 3;
-    Format.PLP_SUBSELECT = 4;
-    Format.PLP_PARAMS = 5;
-    */
-    
     Format.getInstance=function(){
         if (Format.instance==null) Format.instance=new Format();
         return Format.instance;
