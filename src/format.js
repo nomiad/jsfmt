@@ -17,15 +17,15 @@
                 "h":format_decimal,
                 "?":format_parseIf,
                 "s":format_tabs
-            };
+        };
         var F=Format.defaultFormat;
         
         this.format=function(format,args){
             currentArgs = Array.prototype.slice.call(arguments,1);
             if (format==null) return "Error: undefined Format";
-        	if (arguments.length<2) return format;
-        	if (format.indexOf("{") == -1) return format; //optimized
-        	var str=format.replace(F.placeholderPattern, function(){return format_replace.apply(that,arguments);});
+            if (arguments.length<2) return format;
+            if (format.indexOf(F.placeholderIndexOfCheck) == -1) return format; //optimized
+            var str=format.replace(F.placeholderPattern, function(){return format_replace.apply(that,arguments);});
             if (_customVariablesUsed) {
                 _customVariablesUsed=false;
                 _customVariables=null;
@@ -50,7 +50,7 @@
             try {
                 var res=args[0];
                 if (args[F.PLP_PARAMS]==undefined || args[F.PLP_PARAMS]==F.EMPTY) {
-                        res=getValue.call(this,args).toString();
+                    res=getValue.call(this,args).toString();
                 } else {
                     var c = args[F.PLP_PARAMS].charAt(0);
                     var plug=_plugins[c];
@@ -67,7 +67,7 @@
                     _customVariables[args[F.PLP_ASSIGN]] = res;
                     return "";
                 }
-            } catch(e){
+            } catch(e) {
                 res=args[0];
                 if (window.console!=null)
                     console.warn("Format problem: '"+args[0]+"' in '"+args[7].substr(0,16)+"...'");
@@ -151,7 +151,6 @@
                         digStr += "0";
                 }
                 
-                
                 //format min leading length
                 var minLen = res[2].length;
                 while (mainStr.length < minLen)
@@ -205,7 +204,8 @@
     }
     
     Format.defaultFormat={
-        placeholderPattern :/\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9]{1,15}?|)(?:\:(.+?)|)\}/g,
+        placeholderIndexOfCheck: "{",
+        placeholderPattern: /\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9]{1,15}?|)(?:\:(.+?)|)\}/g,
         parseIfReg:         /^\?(.{1,2})([0-9]{1,5})\|(.*?)\|(.*?)$/,
         formatNumberReg:    /^d(?:(\.|\,|\')|)([#]{1,5})(?:(\.|\,)([#\?]{1,4})|)([cfr]|)$/,
         parseTabsReg:       /^s([l,r,m])([0-9]{1,2})\|(.)/,
@@ -231,7 +231,7 @@
     exports["Format"]=Format;
     
     //expose to amd if is available
-    if ( typeof define === "function" && define.amd  ) {
+    if ( typeof define === "function" && define.amd ) {
         define( "jsfmt", [], function () { return Format; } );
     }
 
