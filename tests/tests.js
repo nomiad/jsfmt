@@ -46,3 +46,15 @@ test( "spaced formatting",function() {
    equal( Format.format("{0:sr8|.}","ab"),"......ab", "space left format" ); 
    equal( Format.format("{0:sm8|.}","ab"),"...ab...", "space middle format" ); 
 });
+
+test( "currency formatting",function(){
+    equal( Format.format("CHF {0:d#.##r}",12.175),"CHF 12.18", "currency format with round" );
+});
+
+test( "alternative function pointer", function(){
+    var fmt=Format.format;
+    var fmtDir=Format.getInstance().format;
+    
+    equal( fmt("{0}","value"),"value","pointer test" );
+    equal( fmtDir("{0}","value"),"value","direct pointer" );
+});
