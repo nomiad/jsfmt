@@ -18,13 +18,14 @@
                 "?":format_parseIf,
                 "s":format_tabs
             };
+        var F=Format.defaultFormat;
         
         this.format=function(format,args){
             currentArgs = Array.prototype.slice.call(arguments,1);
             if (format==null) return "Error: undefined Format";
         	if (arguments.length<2) return format;
         	if (format.indexOf("{") == -1) return format; //optimized
-        	var str=format.replace(Format.placeholderPattern, function(){return format_replace.apply(that,arguments);});
+        	var str=format.replace(F.placeholderPattern, function(){return format_replace.apply(that,arguments);});
             if (_customVariablesUsed) {
                 _customVariablesUsed=false;
                 _customVariables=null;
@@ -48,22 +49,22 @@
             var args=arguments;
             try {
                 var res=args[0];
-                if (args[Format.PLP_PARAMS]==undefined || args[Format.PLP_PARAMS]==Format.EMPTY) {
+                if (args[F.PLP_PARAMS]==undefined || args[F.PLP_PARAMS]==F.EMPTY) {
                         res=getValue.call(this,args).toString();
                 } else {
-                    var c = args[Format.PLP_PARAMS].charAt(0);
+                    var c = args[F.PLP_PARAMS].charAt(0);
                     var plug=_plugins[c];
                     if (plug!=null){  //check plugin for formatting
-                        res=plug.call(this,args[Format.PLP_PARAMS],getValue.call(this,args));
+                        res=plug.call(this,args[F.PLP_PARAMS],getValue.call(this,args));
                     }
                 }
-                if (args[Format.PLP_ASSIGN] != undefined && args[Format.PLP_ASSIGN]!=Format.EMPTY) {
+                if (args[F.PLP_ASSIGN] != undefined && args[F.PLP_ASSIGN]!=F.EMPTY) {
                     if (!_customVariablesUsed) {
                         _customVariables={};
                         _customVariablesUsed=true;
                     }
                     
-                    _customVariables[args[Format.PLP_ASSIGN]] = res;
+                    _customVariables[args[F.PLP_ASSIGN]] = res;
                     return "";
                 }
             } catch(e){
@@ -75,21 +76,21 @@
         }
         
         function getValue(args) {
-                if (args[Format.PLP_SUBSELECT] != Format.EMPTY) {
+                if (args[F.PLP_SUBSELECT] != F.EMPTY) {
                         var val;
-                        if (args[Format.PLP_SELECT] != Format.EMPTY) {
-                                val = currentArgs[parseInt(args[Format.PLP_SELECT],10)];
+                        if (args[F.PLP_SELECT] != F.EMPTY) {
+                                val = currentArgs[parseInt(args[F.PLP_SELECT],10)];
                         } else {
                                 val = currentArgs[0];
                         }
-                        return val[args[Format.PLP_SUBSELECT]];
+                        return val[args[F.PLP_SUBSELECT]];
                 }
-                if (args[Format.PLP_SELECTVAR] != undefined && args[Format.PLP_SELECTVAR]!=Format.EMPTY) {
+                if (args[F.PLP_SELECTVAR] != undefined && args[F.PLP_SELECTVAR]!=F.EMPTY) {
                    if (_customVariablesUsed)
-                        return _customVariables[args[Format.PLP_SELECTVAR]];
+                        return _customVariables[args[F.PLP_SELECTVAR]];
                    else return "NA";
                 }
-                return currentArgs[parseInt(args[Format.PLP_SELECT],10)];
+                return currentArgs[parseInt(args[F.PLP_SELECT],10)];
         }
         
         function format_decimal(rule,nr){
@@ -97,7 +98,7 @@
         }
         function format_parseIf(rule,param) {
             //{0:?!=1|Elemente|Element}
-            var obj = Format.parseIfReg.exec(rule);
+            var obj = F.parseIfReg.exec(rule);
             if (obj != null) {
                 var nr = parseFloat(obj[2]);
                 var res = false;
@@ -113,7 +114,7 @@
             return rule;
         }
         function format_number(rule,val) {
-            var res = Format.formatNumberReg.exec(rule);
+            var res = F.formatNumberReg.exec(rule);
             var nr=val;
             
             //check if its a number
@@ -173,7 +174,7 @@
             return rule;
         }
         function format_tabs(rule,param) {
-            var res = Format.parseTabsReg.exec(rule);
+            var res = F.parseTabsReg.exec(rule);
             if (res != null) {
                 var result = param.toString();
                 var orient = res[1];
@@ -202,6 +203,23 @@
             return param;
         }
     }
+    
+    Format.defaultFormat={
+        placeholderPattern :/\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9]{1,15}?|)(?:\:(.+?)|)\}/g,
+        parseIfReg:         /^\?(.{1,2})([0-9]{1,5})\|(.*?)\|(.*?)$/,
+        formatNumberReg:    /^d(?:(\.|\,|\')|)([#]{1,5})(?:(\.|\,)([#\?]{1,4})|)([cfr]|)$/,
+        parseTabsReg:       /^s([l,r,m])([0-9]{1,2})\|(.)/,
+        EMPTY: "",
+        
+        //place holder positions
+        PLP_ASSIGN: 1,
+        PLP_SELECT: 2,
+        PLP_SELECTVAR: 3,
+        PLP_SUBSELECT: 4,
+        PLP_PARAMS: 5
+    };
+    
+    /*
     Format.placeholderPattern =/\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9]{1,15}?|)(?:\:(.+?)|)\}/g;
     Format.parseIfReg = /^\?(.{1,2})([0-9]{1,5})\|(.*?)\|(.*?)$/;
     Format.formatNumberReg =/^d(?:(\.|\,|\')|)([#]{1,5})(?:(\.|\,)([#\?]{1,4})|)([cfr]|)$/;
@@ -214,6 +232,7 @@
     Format.PLP_SELECTVAR = 3;
     Format.PLP_SUBSELECT = 4;
     Format.PLP_PARAMS = 5;
+    */
     
     Format.getInstance=function(){
         if (Format.instance==null) Format.instance=new Format();
