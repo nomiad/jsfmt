@@ -12,9 +12,12 @@ test( "Basic Function", function() {
 });
 
 test( "Value access test", function() {
-    equal( Format.format("{0.test}",{test:"done"}),"done", "Passed!");
-    equal( Format.format("{test}",{test:"done"}),"done", "Passed!");
-    equal( Format.format("{1.test}",1,{test:"done"}),"done", "Passed!");
+    equal( Format.format("{0.test}",{test:"done"}),"done", "number.name access");
+    equal( Format.format("{test}",{test:"done"}),"done", "single name access");
+    equal( Format.format("{1.test}",1,{test:"done"}),"done", "deep 1 value access");
+    equal( Format.format("{1.test.inner}",1,{test:{inner:"done"}}),"done", "deep 2 value access");
+    equal( Format.format("{1.test.inner.inner}",1,{test:{inner:{inner:"done"}}}),"done", "deep 3 value access");
+    equal( Format.format("{test.inner.inner}",{test:{inner:{inner:"done"}}}),"done", "deep 3 value access direct");
 });
 
 test( "Escape placeholder test",function(){

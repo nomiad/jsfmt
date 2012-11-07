@@ -83,7 +83,7 @@
                         } else {
                                 val = currentArgs[0];
                         }
-                        return val[args[F.PLP_SUBSELECT]];
+                        return getValuePath(val,args[F.PLP_SUBSELECT].split("."),0);
                 }
                 if (args[F.PLP_SELECTVAR] != undefined && args[F.PLP_SELECTVAR]!=F.EMPTY) {
                    if (_customVariablesUsed)
@@ -91,6 +91,14 @@
                    else return "NA";
                 }
                 return currentArgs[parseInt(args[F.PLP_SELECT],10)];
+        }
+        function getValuePath(obj,path,depth){
+            if (depth==null) depth=0;
+            var name=path[depth];
+            
+            if (name==null) return obj;
+            else return getValuePath(obj[name],path,depth+1);
+            
         }
         
         function format_decimal(rule,nr){
@@ -205,7 +213,8 @@
     
     Format.defaultFormat={
         placeholderIndexOfCheck: "{",
-        placeholderPattern: /\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9]{1,15}?|)(?:\:(.+?)|)\}/g,
+        //                    {  $a                   =    $a | 0-99                 .        :                                 
+        placeholderPattern: /\{(?:\$([a-zA-Z0-9]{1,4})=|)(\$([a-zA-Z0-9]{1,4})|[0-9]{1,2}|)(?:\.|)(?:#|)([a-zA-Z0-9\.]{1,60}?|)(?:\:(.+?)|)\}/g,
         parseIfReg:         /^\?(.{1,2})([0-9]{1,5})\|(.*?)\|(.*?)$/,
         formatNumberReg:    /^d(?:(\.|\,|\')|)([#]{1,5})(?:(\.|\,)([#\?]{1,4})|)([cfr]|)$/,
         parseTabsReg:       /^s([l,r,m])([0-9]{1,2})\|(.)/,
