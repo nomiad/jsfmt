@@ -16,6 +16,11 @@ Usage
 
 More samples are currently available in the unittest (tests/tests.js)
 
+Unittests
+=====
+Currently active here
+[Unittests](http://htmlpreview.github.com/?https://github.com/nomiad/jsfmt/blob/master/tests/tests.html)
+
 Contributers
 =====
 nomiad | guavestudios.com
